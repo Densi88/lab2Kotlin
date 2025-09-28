@@ -10,6 +10,7 @@ fun main() {
             1->addStudent()
             2->showStudentList()
             3->currentStudentStudy()
+            4->reEnter()
             9->running=false
             else->{
                 println("Неверный пункт!")
@@ -21,6 +22,7 @@ fun printMenu(){
     println("Добавить студента(1)")
     println("Показать список студентов(2)")
     println("Заставить студента учиться(3)")
+    println("Перевести студента(4)")
     println("Выход(9)")
 }
 fun addStudent(){
@@ -76,5 +78,56 @@ fun currentStudentStudy(){
     val currentStudent=students.find { it.number==currentNumber }
     if (currentStudent != null) {
         currentStudent.study()
+    }
+}
+fun reEnter(){
+    println("Введите номер зачетки перепоступающего:")
+    val scanner =Scanner(System.`in`)
+    var choose:Int
+    val currentNumber:Int=scanner.nextInt()
+    students.forEach{ student->
+        if(student.number==currentNumber){
+            println("Куда перепоступаем?")
+            println("Бакалавр(1)")
+            println("Магистратура(2)")
+            println("Аспирантура(3)")
+            choose=scanner.nextInt()
+            when(choose){
+                1->{
+                    val newStudent=Bachelor(student.number, student.age, student.name, student.group)
+                    students.add(newStudent)
+                    students.remove(student)
+                    println("Студент переведен!")
+                    }
+                2->{
+                    if(student is Bachelor){
+                        val newStudent=Master(student.number, student.age, student.name, student.group)
+                        students.add(newStudent)
+                        students.remove(student)
+                        println("Студент переведен!")
+                    }
+                    else{
+                        println("На магистратуру может перепоступить только бакалавр!")
+                        return
+                    }
+                }
+                3->{
+                    if(student is Master){
+                        val newStudent=Graduate(student.number, student.age, student.name, student.group)
+                        students.add(newStudent)
+                        students.remove(student)
+                        println("Студент переведен!")
+
+                    }
+                    else{
+                        println("В аспирантуру может пойти только магистр!")
+                        return
+                    }
+                }
+            }
+        }
+        else{
+            println("Студент не найден")
+        }
     }
 }
